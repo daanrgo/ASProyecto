@@ -4,38 +4,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
 import com.enviocorreo.email.entity.Email;
+import com.enviocorreo.email.repository.EmailRepository;
 import jakarta.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
 
 @Service
-
 public class EmailService {
 
     @Autowired
-    JavaMailSender javaMailSender;
-    
-    public void enviarEmail (Email email)
+    private JavaMailSender javaMailSender;
 
-    {
+    @Autowired
+    private EmailRepository emailRepository;
 
-    try {
+    public void enviarEmail(Email email) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            helper.setFrom(email.getFrom());
+            helper.setTo(email.getTo());
+            helper.setSubject(email.getSubject());
+            helper.setText(email.getText());
 
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            javaMailSender.send(mimeMessage);
 
-        mimeMessage.setFrom(email.getFrom());
 
-        mimeMessageHelper.setTo(email.getTo());
+            email.setSentAt(LocalDateTime.now());
+            emailRepository.save(email);
 
-        mimeMessageHelper.setSubject(email.getSubject());
+            System.out.println("✅ Correo enviado y registro guardado");
 
-        mimeMessageHelper.setText(email.getText());
-
-        javaMailSender.send(mimeMessage);
-
-    }catch (Exception e){
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-} }
-    
+}
