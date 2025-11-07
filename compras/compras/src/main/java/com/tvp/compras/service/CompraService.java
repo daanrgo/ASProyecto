@@ -4,7 +4,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tvp.compras.config.RabbitMQConfig;
-import com.tvp.compras.model.Compra;
+import com.tvp.compras.entity.Compra;
 import com.tvp.compras.repository.CompraRepository;
 
 @Service

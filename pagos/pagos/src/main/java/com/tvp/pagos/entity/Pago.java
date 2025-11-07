@@ -1,4 +1,4 @@
-package com.tvp.pagos.model;
+package com.tvp.pagos.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

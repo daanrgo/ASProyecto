@@ -1,0 +1,24 @@
+package com.tvp.auth.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "usuarios")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
+    private String rol; // USER, ADMIN
+}
