@@ -1,21 +1,29 @@
 package com.enviocorreo.email.services;
 
+import com.enviocorreo.email.dto.NotificacionRequest;
 import com.enviocorreo.email.entity.Email;
+import com.enviocorreo.email.services.EmailService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class EmailListener {
 
-    private final EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
-    public EmailListener(EmailService emailService) {
-        this.emailService = emailService;
-    }
+    @RabbitListener(queues = "cola.notificaciones")
+    public void recibirNotificacion(NotificacionRequest dto) {
+        System.out.println("📬 Recibiendo notificación para: " + dto.getToEmail());
 
-    @RabbitListener(queues = "cola_mensajes")
-    public void recibir(Email email) {
-        System.out.println("📧 Mensaje recibido desde RabbitMQ: " + email);
+        Email email = Email.builder()
+                .to(dto.getToEmail())
+                .subject(dto.getSubject())
+                .text(dto.getBody())
+                .build();
+
         emailService.enviarEmail(email);
+        System.out.println("✅ Correo enviado a: " + dto.getToEmail());
     }
 }
