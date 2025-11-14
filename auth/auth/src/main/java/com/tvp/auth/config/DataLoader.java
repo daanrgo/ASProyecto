@@ -16,7 +16,7 @@ public class DataLoader {
                 repo.save(Usuario.builder()
                         .email("user@mail.com")
                         .password("123456")
-                        .rol("USER")
+                        .rol(Usuario.Rol.CLIENTE)
                         .build());
             }
         };

@@ -20,5 +20,10 @@ public class Usuario {
 
     private String password;
 
-    private String rol; // USER, ADMIN
+    @Enumerated(EnumType.STRING)
+    private Rol rol; // CLIENTE, ADMIN
+
+    public enum Rol {
+        CLIENTE, ADMIN
+    }
 }
