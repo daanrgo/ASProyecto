@@ -65,18 +65,39 @@ export class AuthService {
     return this.http.get<Usuario[]>(`${this.authUrl}/usuarios`, { headers });
   }
 
-  // AGREGAR ESTE MÉTODO QUE FALTA
-  getPerfil(): Observable<Usuario> {
+ getPerfil(): Observable<Usuario> {
+  return new Observable(observer => {
     const userData = localStorage.getItem('user_data');
-    if (userData) {
-      const user = JSON.parse(userData);
-      return new Observable(observer => {
+    
+    // Verificación exhaustiva
+    if (userData && 
+        userData !== 'undefined' && 
+        userData !== 'null' && 
+        userData.trim() !== '' &&
+        userData !== '{}') {
+      try {
+        const user = JSON.parse(userData);
         observer.next(user);
         observer.complete();
+      } catch (error) {
+        console.error('Error parsing user data from localStorage:', error);
+        // Fallback al backend
+        this.http.get<Usuario>(`${this.authUrl}/perfil`).subscribe({
+          next: (user) => observer.next(user),
+          error: (err) => observer.error(err),
+          complete: () => observer.complete()
+        });
+      }
+    } else {
+      // No hay datos en localStorage, usar backend
+      this.http.get<Usuario>(`${this.authUrl}/perfil`).subscribe({
+        next: (user) => observer.next(user),
+        error: (err) => observer.error(err),
+        complete: () => observer.complete()
       });
     }
-    return this.http.get<Usuario>(`${this.authUrl}/perfil`);
-  }
+  });
+}
 
   logout(): void {
     localStorage.removeItem('auth_token');
