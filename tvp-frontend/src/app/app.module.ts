@@ -5,14 +5,20 @@ import { FormsModule } from '@angular/forms';  // ← ESTE
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
+import { LoginComponent } from './components/login/login.component';
+import { UsuariosComponent } from './components/usuarios/usuarios.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
+import { PaquetesComponent } from './components/paquetes/paquetes.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    NavbarComponent,
+    PerfilComponent,
+    PaquetesComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,13 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-title">
+      <h1>Proyecto AS 2025</h1>
+    </div>
+    <div class="nav-links" *ngIf="isLoggedIn()">
+      <a routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
+      <a routerLink="/perfil" routerLinkActive="active">Mi Perfil</a>
+      <a routerLink="/paquetes" routerLinkActive="active">Paquetes de Viaje</a>
+      <button class="logout-btn" (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </div>
+</nav>

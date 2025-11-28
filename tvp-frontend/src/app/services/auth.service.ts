@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; // ← Agregar HttpHeaders
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -63,6 +63,19 @@ export class AuthService {
     });
 
     return this.http.get<Usuario[]>(`${this.authUrl}/usuarios`, { headers });
+  }
+
+  // AGREGAR ESTE MÉTODO QUE FALTA
+  getPerfil(): Observable<Usuario> {
+    const userData = localStorage.getItem('user_data');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return new Observable(observer => {
+        observer.next(user);
+        observer.complete();
+      });
+    }
+    return this.http.get<Usuario>(`${this.authUrl}/perfil`);
   }
 
   logout(): void {
