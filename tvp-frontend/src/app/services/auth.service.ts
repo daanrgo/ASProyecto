@@ -65,39 +65,45 @@ export class AuthService {
     return this.http.get<Usuario[]>(`${this.authUrl}/usuarios`, { headers });
   }
 
- getPerfil(): Observable<Usuario> {
-  return new Observable(observer => {
+  getPerfil(): Observable<Usuario> {
     const userData = localStorage.getItem('user_data');
     
-    // Verificación exhaustiva
-    if (userData && 
-        userData !== 'undefined' && 
-        userData !== 'null' && 
-        userData.trim() !== '' &&
-        userData !== '{}') {
+    if (userData && userData !== 'undefined' && userData !== 'null') {
       try {
         const user = JSON.parse(userData);
-        observer.next(user);
-        observer.complete();
-      } catch (error) {
-        console.error('Error parsing user data from localStorage:', error);
-        // Fallback al backend
-        this.http.get<Usuario>(`${this.authUrl}/perfil`).subscribe({
-          next: (user) => observer.next(user),
-          error: (err) => observer.error(err),
-          complete: () => observer.complete()
+        return new Observable(observer => {
+          observer.next(user);
+          observer.complete();
         });
+      } catch (error) {
+        console.error('Error parsing user data:', error);
       }
-    } else {
-      // No hay datos en localStorage, usar backend
-      this.http.get<Usuario>(`${this.authUrl}/perfil`).subscribe({
-        next: (user) => observer.next(user),
-        error: (err) => observer.error(err),
-        complete: () => observer.complete()
-      });
     }
-  });
-}
+    
+    // Fallback: crear un usuario temporal con datos del token
+    const token = this.getToken();
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const tempUser: Usuario = {
+          id: payload.id || 1,
+          email: payload.email || 'usuario@ejemplo.com',
+          rol: payload.rol || 'user'
+        };
+        return new Observable(observer => {
+          observer.next(tempUser);
+          observer.complete();
+        });
+      } catch (error) {
+        console.error('Error creating temp user:', error);
+      }
+    }
+    
+    // Si todo falla, retornar error
+    return new Observable(observer => {
+      observer.error('No se pudo cargar el perfil');
+    });
+  }
 
   logout(): void {
     localStorage.removeItem('auth_token');
