@@ -87,8 +87,8 @@ export class AuthService {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const tempUser: Usuario = {
           id: payload.id || 1,
-          email: payload.email || 'usuario@ejemplo.com',
-          rol: payload.rol || 'user'
+          email: payload.email || 'ever.blancom@javeriana.edu.co',
+          rol: payload.rol || 'Ever Jesus Blanco Meza'
         };
         return new Observable(observer => {
           observer.next(tempUser);
