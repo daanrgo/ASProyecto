@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // ← Agregar HttpHeaders
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -55,7 +55,14 @@ export class AuthService {
   }
 
   getUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`${this.authUrl}/usuarios`);
+    const token = this.getToken();
+    
+    // Crear headers con el token de autorización
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<Usuario[]>(`${this.authUrl}/usuarios`, { headers });
   }
 
   logout(): void {
@@ -69,7 +76,27 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('auth_token');
+    return !!this.getToken() && this.isTokenValid();
+  }
+
+  // obtener el token
+  getToken(): string | null {
+    return localStorage.getItem('auth_token');
+  }
+
+  // verificar si el token es válido
+  isTokenValid(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    
+    try {
+      // Decodificar el token JWT (parte del payload)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expiration = payload.exp * 1000; // Convertir a milisegundos
+      return Date.now() < expiration;
+    } catch (error) {
+      return false;
+    }
   }
 
   private loadStoredUser(): void {
