@@ -27,11 +27,12 @@ public class EmailApplication implements CommandLineRunner {
         System.out.println("Correo de Prueba");
 		emailService.enviarEmail(Email.builder()
 		.from("ddataramirez@gmail.com")
-		.to("ramirezg.david@javeriana.edu.co")
-		.subject("Correo de prueba")
-		.text("Compra realizada con exito")
+		.to("ever.blancom@javeriana.edu.co")
+		.subject("Notificacion de Compra (Ejercicio Prueba)")
+		.text("Nombre del Paquete: Aventura en Machu Picchu\n Precio Total $1900.80\n Fecha de Compra: 2024-07-15\n ¡Gracias por su compra!")
 		.build()
 		);
 
     }
 }
+

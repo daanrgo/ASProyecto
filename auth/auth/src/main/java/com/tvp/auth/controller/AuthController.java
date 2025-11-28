@@ -8,6 +8,7 @@ import com.tvp.auth.repository.UsuarioRepository;
 import com.tvp.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.List; 
 
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +27,10 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @GetMapping("/usuarios")
+    public List<Usuario> obtenerUsuarios() {
+        return usuarioRepository.findAll();
+    }
     @PostMapping("/register")
     public LoginResponse registrar(@RequestBody RegistroRequest dto) {
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
